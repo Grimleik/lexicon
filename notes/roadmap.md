@@ -23,7 +23,8 @@ names or art.
    When time runs out, ship what works.
 5. **Retro** (5 min): what was new, what was hard, what should move to
    `core/`? Answer the questions from step 2, backed by something you
-   measured or saw.
+   measured or saw. Then the **copilot setup**: what helped, what
+   annoyed, anything to pull in from `notes/copilot_backlog.md`?
 6. Optional **own-it side quest**: replace or build one system yourself.
 
 ## The ladder

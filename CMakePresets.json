@@ -1,0 +1,44 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "description": "Shared by all presets: Ninja, one build folder per preset.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}"
+        },
+
+        {
+            "name": "windows-base",
+            "hidden": true,
+            "inherits": "base",
+            "description": "MSVC. 'external' tells VS Code / Visual Studio to load the MSVC developer environment for us.",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+            "architecture": { "value": "x64", "strategy": "external" },
+            "toolset": { "value": "host=x64", "strategy": "external" },
+            "cacheVariables": { "CMAKE_C_COMPILER": "cl", "CMAKE_CXX_COMPILER": "cl" }
+        },
+        { "name": "windows-debug",   "inherits": "windows-base", "displayName": "Windows Debug",
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
+        { "name": "windows-release", "inherits": "windows-base", "displayName": "Windows Release",
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" } },
+        { "name": "windows-asan",    "inherits": "windows-base", "displayName": "Windows Debug + AddressSanitizer",
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "LEXICON_ASAN": "ON" } },
+
+        {
+            "name": "linux-base",
+            "hidden": true,
+            "inherits": "base",
+            "description": "GCC/Clang on Linux (including WSL).",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
+        },
+        { "name": "linux-debug",   "inherits": "linux-base", "displayName": "Linux Debug",
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
+        { "name": "linux-release", "inherits": "linux-base", "displayName": "Linux Release",
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" } },
+        { "name": "linux-asan",    "inherits": "linux-base", "displayName": "Linux Debug + AddressSanitizer",
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "LEXICON_ASAN": "ON" } }
+    ]
+}

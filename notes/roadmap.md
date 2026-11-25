@@ -1,15 +1,11 @@
-# Roadmap (draft, for discussion)
+# Roadmap
 
-Ten existing games, each chosen for what it **teaches** when you build it
-without an engine. Each one is a real game you can play to get the "feel".
-Designing your own twist is a stretch goal, never a requirement.
+Ten existing games, each one there for what it **teaches** when built
+without an engine. Each is a real game you can play to get the "feel".
+Your own design twist is a stretch goal, never a requirement.
 
-Built from: the 20 Games Challenge's structure (definition of done, stretch
-goals, alternatives), the NYU CS-UY 3113 project sequence (Pong, then Lunar
-Lander, then AI, then Platformer), the chapter order of Madhav's *Game
-Programming in C++* (loop, then 2D objects, then vectors/physics, then AI,
-then 3D, then audio), Becker & Parker's genre-to-concept mapping, and the
-from-scratch gaps that engine-based lists skip.
+The order puts small projects first, for momentum. The big games are cut
+to a **slice** (one dungeon, one map, one chapter).
 
 These are private learning remakes. Don't publish them with the original
 names or art.
@@ -19,47 +15,69 @@ names or art.
 1. **Play the original** (or watch footage) for 30 min. Write down the
    rules and how it feels.
 2. **Write the definition of done** in the devlog *before* coding.
-3. Build it. Time limit: roughly 2 weekends. When time runs out, ship what
-   works.
-4. **Retro** (5 min): what was new, what was hard, what should move to
+3. **Read just in time:** only the "Read" column for this game, nothing
+   ahead.
+4. Build it. Time limit: small games ~1 weekend, slices ~3-4 weekends.
+   When time runs out, ship what works.
+5. **Retro** (5 min): what was new, what was hard, what should move to
    `core/`?
-5. Optional **own-it side quest**: replace one thing SDL does for you.
+6. Optional **own-it side quest**: replace or build one system yourself.
 
 ## The ladder
 
-| # | Game (alternative) | New learning outcomes | Own-it side quest |
-|---|---|---|---|
-| 0 | *Window + moving rect* | SDL setup, event loop, frame timing, drawing a rect | - |
-| 1 | **Pong** | Game loop anatomy, input, delta time, AABB collision, scoring, reset | **Refactor:** split into platform/game layers |
-| 2 | **Breakout** (Arkanoid) | Entity arrays, level layout as data, bounce angle from hit position, game states (serve/play/win/lose), save high score to file | Bitmap font text rendering |
-| 3 | **Asteroids** (Lunar Lander) | Vector math + your vec2 type, rotation, thrust/drag, screen wrap, circle collision, particles, **fixed timestep** | Draw lines yourself (Bresenham) |
-| 4 | **Tetris** (Snake) | Simulation on a discrete grid separate from rendering, rotation tables, input auto-repeat, timers/speed curve, menus | Memory arena: one block from the platform, no malloc in the game |
-| 5 | **Space Invaders** (Galaga) | Loading images, sprite sheets, animation, many entities + pooling, formation movement, music + sound effects | Your own audio mixer |
-| 6 | **Pac-Man** (Bomberman) | Tilemaps from file, grid-locked movement with turn buffering, AI state machines, per-ghost targeting, BFS | Debug overlay: draw AI targets/paths |
-| 7 | **Super Mario Bros. world 1-1** (Pitfall, VVVVVV) | Platformer controller and how it feels, tile collision resolution, scrolling camera, enemies, level loading | Hot reload of game code or level data |
-| 8 | **Worms** (Lemmings, Dig Dug) | Destructible pixel terrain, projectile physics, turn-based flow, camera follow/zoom, in-game UI | Software framebuffer: you write the pixels, SDL only presents them |
-| 9 | **Wolfenstein 3D**, first level | Raycasting (DDA), first-person math, textured walls, sprites with a depth buffer: 3D on the CPU | Profile and optimize your rasterizer |
-| 10 | **Super Monkey Ball**, a few levels (Star Fox rail section) | GPU pipeline (SDL_GPU or OpenGL), shaders, matrices, mesh loading, sphere-vs-triangle collision, 3D camera | - |
+| # | Game (slice) | Gameplay outcomes | Systems outcome | Own-it side quest |
+|---|---|---|---|---|
+| 0 | *Window + moving rect* | SDL event loop, drawing a rect | Frame timing: measure it | - |
+| 1 | **Pong** | Loop, input, delta time, AABB collision, scoring | What a frame actually is | **Refactor:** split into platform/game layers |
+| 2 | **Snake** | Grid movement, fixed update rate, growth, game over | Ring buffer, fixed timestep | Your own random number generator (xorshift/PCG) |
+| 3 | **Breakout** | Entity arrays, levels as data, bounce angles, game states | Plain data files, save high score | Bitmap font text rendering |
+| 4 | **Minesweeper** | Mouse input, flood fill, first click always safe, timer | Recursion vs an explicit stack (why deep recursion crashes) | Your own BMP loader |
+| 5 | **Tetris** | Rotation tables, input auto-repeat, speed curve, menus | Memory arena: no `malloc` in game code | - |
+| 6 | **Vampire Survivors** (one stage) | Swarms, auto-attacks, upgrade choices | **Performance:** profiling, spatial hashing, struct-of-arrays vs array-of-structs, cache behavior | Your own audio mixer (many sounds at once) |
+| 7 | **Zelda**, NES-style (overworld region + one dungeon) | Tilemaps, screen transitions, many entity types, inventory, dialogue | Save game serialization, hot reload | WAV loader + asset pack file |
+| 8 | **Fire Emblem** (one chapter) | Turn-based state machine, movement range, combat forecast, lots of UI | Dijkstra with terrain costs, AI by scoring options, unit data in files | Immediate-mode debug UI |
+| 9 | **Diablo** (one generated dungeon level, one class) | Click-to-move, real-time combat, random loot, inventory grid | Isometric depth sorting, A*, procedural generation, light radius | Job system (threads) |
+| 10 | **HoMM3** (small adventure map + hex battle) | Strategic layer, fog of war, daily economy, hex combat | Hex math; extract Fire Emblem's grid/turn code into `core/` | Your own Win32 window + input layer (replacing SDL's) |
 
-After 10: your own designs, or revisit a favourite with your own twist.
+**Alternatives** (swap freely; the outcomes matter more than the game):
+Flappy Bird or Missile Command for 2-4 · Factorio-lite for 6 · Advance Wars
+or Into the Breach for 8 · a Brogue-style roguelike as a warm-up before 9.
+
+**After the ten (optional season 2: 3D):** a Doom-style software renderer
+(BSP, all on the CPU), then a small game on the GPU (SDL_GPU or OpenGL).
+
+## Read (just in time)
+
+| # | Sources |
+|---|---|
+| 0-1 | [SDL3 examples](https://examples.libsdl.org/SDL3/) (official, runnable), [SDL3 wiki](https://wiki.libsdl.org/SDL3/), *Game Programming Patterns*: [Game Loop](https://gameprogrammingpatterns.com/game-loop.html) |
+| 2 | Glenn Fiedler, [Fix Your Timestep!](https://gafferongames.com/post/fix_your_timestep/) |
+| 3 | *Game Programming Patterns*: [State](https://gameprogrammingpatterns.com/state.html) |
+| 4 | *CS:APP* ch. 3, the stack and procedure calls ([csapp.cs.cmu.edu](https://csapp.cs.cmu.edu/)) |
+| 5 | Ryan Fleury, [Untangling Lifetimes: The Arena Allocator](https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator) |
+| 6 | Casey Muratori, [Performance-Aware Programming](https://www.computerenhance.com/), *GPP*: [Data Locality](https://gameprogrammingpatterns.com/data-locality.html) and [Spatial Partition](https://gameprogrammingpatterns.com/spatial-partition.html), Mike Acton's "Data-Oriented Design and C++" talk (CppCon 2014) |
+| 7 | Handmade Hero (same genre; dip into the relevant episodes, don't binge) |
+| 8 | Red Blob Games, [Introduction to A*](https://www.redblobgames.com/pathfinding/a-star/introduction.html) (covers Dijkstra too) |
+| 9 | Same A* page, [DevilutionX](https://github.com/diasurgical/devilutionX) (reconstructed Diablo 1 source) |
+| 10 | Red Blob Games, [Hexagonal Grids](https://www.redblobgames.com/grids/hexagons/) |
+
+**Background, not tied to a game:** *Computer Systems: A Programmer's
+Perspective* (CS:APP), Ulrich Drepper,
+[What Every Programmer Should Know About Memory](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf)
+(skim), [Fabien Sanglard](https://fabiensanglard.net/) (code reviews of
+classic engines), [Handmade Network](https://handmade.network/).
 
 ## Coverage by topic
 
 | Topic | Introduced | Deepened |
 |---|---|---|
-| Game loop and time | 0, 1 | 3 (fixed timestep), 7 (hot reload) |
-| Math | 3 (vec2) | 9 (raycasting), 10 (matrices) |
-| Collision and physics | 1 (AABB) | 3 (circles), 7 (tiles), 8 (pixels), 10 (3D) |
-| Rendering | 0 (rects) | 2 (text), 5 (sprites), 8 (software), 9 (CPU 3D), 10 (GPU) |
-| Audio | 2 (sound effect) | 5 (mixing) |
-| Data and content | 2 (level data) | 6 (tilemaps), 7 (level files) |
-| AI | 1 (paddle AI) | 6 (state machines, pathing) |
-| Architecture | 1 (platform split) | 4 (memory arena), 5 (pooling), 7 (hot reload) |
-| UI and flow | 2 (game states) | 4 (menus), 8 (in-game UI) |
-
-## Open questions
-
-- Is 10 the right number? An 8-game version, closer to The Game Assembly:
-  merge 4 into 2/3 and drop 9 (but 9 is the bridge from 2D to GPU 3D).
-- Which alternatives look more fun? Swap them freely. The learning
-  outcomes matter more than the specific game.
+| Game loop and time | 0, 1 | 2 (fixed timestep), 7 (hot reload) |
+| Memory | 2 (ring buffer) | 4 (stack), 5 (arena), 6 (cache/data layout) |
+| Collision and spatial | 1 (AABB) | 3 (bounce), 6 (spatial hash), 7 (tiles) |
+| Rendering (2D) | 0 (rects) | 3 (text), 4 (images), 7 (tilemaps), 9 (isometric) |
+| Audio | 3 (sound effect) | 6 (mixing), 7 (own WAV loader) |
+| Data and files | 3 (level data) | 7 (save games), 8 (unit data) |
+| AI and pathfinding | 1 (paddle AI) | 8 (Dijkstra, scoring), 9 (A*), 10 (strategy) |
+| Architecture | 1 (platform split) | 5 (arena), 7 (hot reload), 10 (extract to `core/`) |
+| Platform | 0 (SDL) | 10 (own Win32 layer) |
+| Performance | 0 (measure frame time) | 6 (profiling), 9 (threads) |

@@ -1,20 +1,23 @@
 # =============================================================================
 # Lexicon - top-level build file
 #
-# Everyday commands (run from the repo root):
+# Everyday commands (run from the repo root). The named setups ("presets")
+# live in CMakePresets.json: {windows,linux}-{debug,release,asan}.
 #
-#   cmake -S . -B build -G Ninja      # CONFIGURE: reads this file, generates
-#                                     # build/ (run once, and again after you
-#                                     # edit this file)
-#   cmake --build build               # BUILD: compiles whatever changed
-#   ./build/bin/sdl_check             # RUN: executables end up in build/bin
+#   cmake --preset linux-debug             # CONFIGURE: reads this file,
+#                                          # generates build/linux-debug/
+#                                          # (run once, and again after you
+#                                          # edit this file)
+#   cmake --build build/linux-debug        # BUILD: compiles whatever changed
+#   ./build/linux-debug/bin/sdl_check      # RUN: executables end up in bin/
 #
-#   -S = where the source (this file) lives, -B = where to put generated files.
-#   Nothing is ever written outside build/, so `rm -rf build` is always a safe
-#   "start from scratch" button.
+# On Windows: same, with windows-debug (run from a "Developer PowerShell for
+# VS 2022" so cl.exe is found). In VS Code / Visual Studio, just pick the
+# preset in the UI.
 #
-# Release build (optimizations on) in a separate folder:
-#   cmake -S . -B build-release -G Ninja -DCMAKE_BUILD_TYPE=Release
+# Each preset gets its own folder, so Debug and Release never overwrite each
+# other. Nothing is ever written outside build/, so deleting build/ is always
+# a safe "start from scratch" button.
 # =============================================================================
 
 
@@ -90,13 +93,28 @@ FetchContent_MakeAvailable(SDL3)    # download (if needed) + add_subdirectory
 # A function so every game gets identical flags and you change them in one
 # place. "PRIVATE" = only affects this target, not things that link to it.
 option(LEXICON_ASAN "Enable AddressSanitizer (catches out-of-bounds/use-after-free at runtime)" OFF)
-# Turn on with: cmake -S . -B build -DLEXICON_ASAN=ON
+# Turn on with the *-asan presets, or: -DLEXICON_ASAN=ON
+
+# MSVC: AddressSanitizer can't be combined with /RTC1 (MSVC's own runtime
+# checks), which CMake adds to every Debug build by default. Strip it.
+# Note: an ASan exe needs clang_rt.asan_dynamic-x86_64.dll at runtime; VS Code
+# and Visual Studio find it, a plain double-click from Explorer may not.
+if(MSVC AND LEXICON_ASAN)
+    string(REPLACE "/RTC1" "" CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}")
+    string(REPLACE "/RTC1" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+endif()
 
 function(lexicon_defaults target)
     target_link_libraries(${target} PRIVATE SDL3::SDL3)
 
     if(MSVC)
-        target_compile_options(${target} PRIVATE /W4)
+        target_compile_options(${target} PRIVATE
+            /W4             # high warning level (roughly -Wall -Wextra)
+            # /GR- /EHs-c-  # MSVC spelling of -fno-rtti -fno-exceptions
+        )
+        if(LEXICON_ASAN)
+            target_compile_options(${target} PRIVATE /fsanitize=address /Zi)
+        endif()
     else()
         target_compile_options(${target} PRIVATE
             -Wall -Wextra   # the standard "please warn me" set

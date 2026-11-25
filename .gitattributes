@@ -1,0 +1,13 @@
+# Store text files with LF in the repo, check out with the OS's native line
+# endings (CRLF on Windows, LF on Linux). Stops "every line changed" diffs
+# when moving between Windows and WSL/Linux.
+* text=auto
+
+# Shell scripts must stay LF even on Windows, or bash chokes on the \r.
+*.sh text eol=lf
+
+# Never touch binaries.
+*.png binary
+*.bmp binary
+*.wav binary
+*.ogg binary

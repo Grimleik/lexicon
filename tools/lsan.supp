@@ -1,0 +1,6 @@
+# LeakSanitizer suppressions (Linux ASan builds only; MSVC has no leak checker).
+# Use:  LSAN_OPTIONS=suppressions=tools/lsan.supp ./build/linux-asan/bin/<game>
+#
+# SDL's PulseAudio backend thread allocates a per-thread error buffer that is
+# never freed at exit. Not our bug, a known one-off at shutdown.
+leak:SDL_GetErrBuf

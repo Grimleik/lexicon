@@ -44,10 +44,12 @@ projects quickly. I write the code. You are a tutor and reviewer.
 
 ## Build
 
+Presets in `CMakePresets.json`: `{windows,linux}-{debug,release,asan}`.
+
 ```sh
-cmake -S . -B build -G Ninja    # configure (again after editing CMakeLists.txt)
-cmake --build build             # compile
-./build/bin/<target>            # run, e.g. ./build/bin/sdl_check
+cmake --preset linux-debug           # configure (again after editing CMakeLists.txt)
+cmake --build build/linux-debug      # compile
+./build/linux-debug/bin/<target>     # run, e.g. sdl_check
 ```
 
-`rm -rf build` resets everything. See the comments in `CMakeLists.txt`.
+Deleting `build/` resets everything. See the comments in `CMakeLists.txt`.

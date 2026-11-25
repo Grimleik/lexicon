@@ -14,13 +14,16 @@ names or art.
 
 1. **Play the original** (or watch footage) for 30 min. Write down the
    rules and how it feels.
-2. **Write the definition of done** in the devlog *before* coding.
+2. **Write the definition of done** in the devlog *before* coding: only
+   things you can check by running the game. Also write **3-7 questions**
+   this game should answer (drawn from its outcomes columns below).
 3. **Read just in time:** only the "Read" column for this game, nothing
    ahead.
 4. Build it. Time limit: small games ~1 weekend, slices ~3-4 weekends.
    When time runs out, ship what works.
 5. **Retro** (5 min): what was new, what was hard, what should move to
-   `core/`?
+   `core/`? Answer the questions from step 2, backed by something you
+   measured or saw.
 6. Optional **own-it side quest**: replace or build one system yourself.
 
 ## The ladder

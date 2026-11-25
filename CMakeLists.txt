@@ -12,8 +12,8 @@
 #   ./build/linux-debug/bin/sdl_check      # RUN: executables end up in bin/
 #
 # On Windows: same, with windows-debug (run from a "Developer PowerShell for
-# VS 2022" so cl.exe is found). In VS Code / Visual Studio, just pick the
-# preset in the UI.
+# VS" so cl.exe is found). In VS Code / Visual Studio, just pick the preset
+# in the UI.
 #
 # Each preset gets its own folder, so Debug and Release never overwrite each
 # other. Nothing is ever written outside build/, so deleting build/ is always
@@ -97,8 +97,8 @@ option(LEXICON_ASAN "Enable AddressSanitizer (catches out-of-bounds/use-after-fr
 
 # MSVC: AddressSanitizer can't be combined with /RTC1 (MSVC's own runtime
 # checks), which CMake adds to every Debug build by default. Strip it.
-# Note: an ASan exe needs clang_rt.asan_dynamic-x86_64.dll at runtime; VS Code
-# and Visual Studio find it, a plain double-click from Explorer may not.
+# This runs AFTER Step 5, so SDL keeps its /RTC1. That's fine: SDL isn't
+# built with ASan, only our own targets are (see lexicon_defaults below).
 if(MSVC AND LEXICON_ASAN)
     string(REPLACE "/RTC1" "" CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE "/RTC1" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -113,7 +113,22 @@ function(lexicon_defaults target)
             # /GR- /EHs-c-  # MSVC spelling of -fno-rtti -fno-exceptions
         )
         if(LEXICON_ASAN)
-            target_compile_options(${target} PRIVATE /fsanitize=address /Zi)
+            # No /Zi needed here: CMake already adds it to Debug builds.
+            target_compile_options(${target} PRIVATE /fsanitize=address)
+
+            # An MSVC ASan exe loads clang_rt.asan_dynamic-x86_64.dll at
+            # startup. That DLL lives next to cl.exe, which is only on PATH
+            # inside a developer prompt. Launched any other way (Explorer,
+            # VS Code, RemedyBG...) the exe dies before main() with
+            # 0xC0000135 = STATUS_DLL_NOT_FOUND.
+            # Fix: after each build, copy the DLL next to the exe. Windows
+            # always looks in the exe's own folder first.
+            cmake_path(GET CMAKE_CXX_COMPILER PARENT_PATH msvc_bin_dir)
+            add_custom_command(TARGET ${target} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                        "${msvc_bin_dir}/clang_rt.asan_dynamic-x86_64.dll"
+                        "$<TARGET_FILE_DIR:${target}>"
+                COMMENT "Copying ASan runtime DLL next to ${target}")
         endif()
     else()
         target_compile_options(${target} PRIVATE

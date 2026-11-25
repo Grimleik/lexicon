@@ -14,9 +14,11 @@ names or art.
 
 1. **Play the original** (or watch footage) for 30 min. Write down the
    rules and how it feels.
-2. **Write the definition of done** in the devlog *before* coding: only
-   things you can check by running the game. Also write **3-7 questions**
-   this game should answer (drawn from its outcomes columns below).
+2. **Draft the definition of done with `/plan`**, then make it yours,
+   *before* coding: only things you can check by running the game, plus
+   **3-7 questions** this game should answer (drawn from its outcomes
+   columns below). For every item you should be able to say why it's there;
+   if you can't, ask.
 3. **Read just in time:** only the "Read" column for this game, nothing
    ahead.
 4. Build it. Time limit: small games ~1 weekend, slices ~3-4 weekends.

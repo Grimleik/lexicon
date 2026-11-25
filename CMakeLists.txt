@@ -164,12 +164,68 @@ function(add_game name)
 endfunction()
 
 
-# --- Step 8: Targets ----------------------------------------------------------
+# --- Step 8: Shipping ---------------------------------------------------------
+# lexicon_ship(00_window 0.1) adds a build target that makes the zip a player
+# receives:
+#
+#   cmake --build build/windows-release --target ship_00_window
+#   => build/windows-release/ship/00_window-v0.1.zip
+#
+# How it works, in two CMake concepts:
+#   install()   declares WHAT belongs in a release and where it goes inside
+#               it. Only the exe: no .pdb (debug symbols), no build junk.
+#               COMPONENT tags it, so each game can be installed on its own.
+#   --install   copies a component's files into a folder (the "stage").
+# The ship target installs into a fresh stage folder, then zips it with
+# CMake's built-in `-E tar`, so no zip tool needs to be installed.
+#
+# The version lives here, in the call. The GitHub release workflow
+# (.github/workflows/build.yml) requires the git tag to be exactly the zip
+# name (00_window-v0.1), so a tag and its zip can't disagree.
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/ship)
+
+function(lexicon_ship target version)
+    set(zip_name "${target}-v${version}")
+    set(stage "${CMAKE_BINARY_DIR}/ship/${zip_name}")
+
+    install(TARGETS ${target} RUNTIME DESTINATION . COMPONENT ${target})
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT LEXICON_ASAN)
+        add_custom_target(ship_${target}
+            # Start from an empty stage, so files from an old build can't
+            # sneak into the zip.
+            COMMAND ${CMAKE_COMMAND} -E rm -rf "${stage}"
+            COMMAND ${CMAKE_COMMAND} --install "${CMAKE_BINARY_DIR}"
+                    --component ${target} --prefix "${stage}"
+            # Zip the folder itself, so unzipping gives one tidy folder.
+            COMMAND ${CMAKE_COMMAND} -E tar cf "${zip_name}.zip" --format=zip "${zip_name}"
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/ship"
+            DEPENDS ${target}   # build the exe first if it's out of date
+            COMMENT "Shipping ${CMAKE_BINARY_DIR}/ship/${zip_name}.zip"
+            VERBATIM)
+    else()
+        # S4: players only get release builds. In any other preset the target
+        # exists, but fails with an explanation instead of zipping a debug or
+        # ASan build.
+        add_custom_target(ship_${target}
+            COMMAND ${CMAKE_COMMAND} -E echo
+                    "ship_${target}: only release builds ship. Use the windows-release preset."
+            COMMAND ${CMAKE_COMMAND} -E false
+            VERBATIM)
+    endif()
+endfunction()
+
+
+# --- Step 9: Targets ----------------------------------------------------------
 # Build sanity check: prints SDL version + which video/audio backends got
 # compiled in, and whether it can reach the WSLg display/audio. No window.
 add_executable(sdl_check tools/sdl_check.cpp)
 lexicon_defaults(sdl_check)
+# Stand-in so the shipping pipeline can be tested before game 0 exists.
+# Remove once a real game ships.
+lexicon_ship(sdl_check 0.1)
 
 # Your games. Uncomment a line once the folder exists with a .cpp file in it.
+# Add lexicon_ship(<name> <version>) under a game once it's ready to ship.
 # add_game(00_window)
 # add_game(01_pong)

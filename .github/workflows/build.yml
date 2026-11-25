@@ -1,0 +1,110 @@
+# GitHub Actions: GitHub runs this on a fresh Windows machine ("runner").
+# Results show as a check mark / red X next to each commit on GitHub, and
+# under the repo's "Actions" tab.
+#
+# Two jobs:
+#   build    every push: configure + build, then run sdl_check.
+#            Proves the project builds on a clean machine, not just yours.
+#   release  only when you push a tag like 00_window-v0.1: builds that
+#            game's zip with its ship_ target (see CMakeLists.txt, Step 8)
+#            and attaches it to a GitHub release with that name.
+#
+# To release:
+#   git tag 00_window-v0.1
+#   git push origin 00_window-v0.1
+#
+# Cost: private repos get a monthly allowance of free minutes, and Windows
+# minutes count double. To stay well inside it, pushes that only touch notes
+# or markdown don't build at all (paths-ignore below).
+
+name: build
+
+on:
+  push:
+    branches: ['**']
+    tags: ['*-v*']            # release tags: <target>-v<version>
+    paths-ignore: ['notes/**', '**.md']
+  workflow_dispatch:          # adds a "Run workflow" button in the Actions tab
+
+# A newer push to the same branch cancels a run that's still going.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false        # one preset failing doesn't cancel the others
+      matrix:
+        # ASan is left out to save minutes: run windows-asan locally (game
+        # DoDs do). Add it here if you want CI to check it too.
+        preset: [windows-debug, windows-release]
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same job as a "Developer PowerShell for VS": puts cl.exe, the MSVC
+      # headers/libs and VS's bundled Ninja on PATH. Our presets expect that
+      # (the "external" strategy in CMakePresets.json).
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: cmake --build build/${{ matrix.preset }}
+
+      # The runner has no screen or sound card. SDL's "dummy" drivers let
+      # sdl_check's init succeed anyway, so this checks that the exe starts
+      # and SDL works, not that a display exists.
+      - name: Run sdl_check
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: build/${{ matrix.preset }}/bin/sdl_check.exe
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build              # only release what passed the build job
+    runs-on: windows-latest
+    permissions:
+      contents: write         # allows creating the release
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      # Tag 00_window-v0.1 => target 00_window. ${tag%-v*} strips the
+      # shortest "-v..." suffix from the end.
+      - name: Read target from tag
+        id: tag
+        shell: bash
+        run: echo "target=${GITHUB_REF_NAME%-v*}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure
+        run: cmake --preset windows-release
+
+      - name: Build zip
+        run: cmake --build build/windows-release --target ship_${{ steps.tag.outputs.target }}
+
+      # The zip name comes from the version in CMakeLists.txt. If it doesn't
+      # match the tag, stop: you probably forgot to bump one of them.
+      - name: Check zip matches tag
+        shell: bash
+        run: |
+          zip="build/windows-release/ship/${GITHUB_REF_NAME}.zip"
+          if [ ! -f "$zip" ]; then
+            echo "Expected $zip, found:"; ls build/windows-release/ship
+            echo "The tag and the version in lexicon_ship() must match."
+            exit 1
+          fi
+
+      # gh is GitHub's CLI, preinstalled on runners. --generate-notes lists
+      # the commits since the previous release.
+      - name: Create release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "build/windows-release/ship/${GITHUB_REF_NAME}.zip" \
+            --title "$GITHUB_REF_NAME" --generate-notes

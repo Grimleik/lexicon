@@ -19,6 +19,7 @@ own; if you think another mode fits better, say so and let me decide.
 | review | `/review` | You review and test my code or yours. No rewrites. |
 | quiz | `/quiz` | Review due ledger cards. |
 | (one-off) | `/card` | You review a card I drafted and file it in the ledger. |
+| (one-off) | `/plan` | You draft a game's definition of done and questions; I make it mine. |
 
 ## Copilot rules (default mode)
 

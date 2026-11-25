@@ -33,6 +33,15 @@ use shows it's missing.
   diagram can't show well.
 - `playground/` CMake integration once the first demo exists.
 
+## Build / ship / CI
+
+- **Automated tests:** unit tests once there's logic worth testing (Snake's
+  ring buffer is the first candidate). Run them in the CI build job.
+- **itch.io:** a restricted page (secret link) for games worth showing;
+  upload from the release job with itch's `butler` CLI.
+- **ASan in CI:** add `windows-asan` to the build matrix if minutes allow.
+- **Linux in CI:** needs SDL's dev packages installed on the runner first.
+
 ## Session habits
 
 - **End-of-session retrieval:** "3 things I learned today", written from

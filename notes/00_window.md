@@ -1,15 +1,3 @@
-## Blog
-Definition of Done:
-* Read about the game loop in game programming patterns.
-	* Setup a basic game loop
-* Move a rectangle on the screen using SDL Window and Input.
-* Exit without any memory issues.
-
----
-
-<!-- Review suggestions below (from Claude). Merge what you agree with into
-     the sections above, reword in your own voice, delete the rest. -->
-
 ## Definition of Done: sharpened
 
 Rule of thumb: every item should be something you can *check* by running
@@ -18,22 +6,42 @@ to the Reading section.
 
 - [ ] **Window:** opens, stays responsive, and closes cleanly with both the
       window's X button and Escape.
-- [ ] **Rect:** moves with the keyboard (which keys? decide). Speed is
+- [ ] **Rect:** moves with the keyboard WASD. Speed is
       defined in *pixels per second*, and it looks the same with vsync on
       and off.
 - [ ] **Frame time:** the program measures how long each frame takes and
-      reports it in a form you decide (e.g. avg/min/max in ms, printed
-      once per second). This is the roadmap's "systems outcome" for
-      game 0.
+      reports it in a form you decide, e.g. FPS and ms.
+      This is the roadmap's "systems outcome" for game 0.
 - [ ] **Memory:** "no memory issues" means, concretely:
   - runs and exits under the `windows-asan` preset with no reports;
   - everything you create, you destroy, in reverse order, then `SDL_Quit`;
-  - leaks: MSVC's ASan does *not* check for leaks. Either run once under
-    `linux-asan` in WSL (LeakSanitizer does), or look into the MSVC CRT
+  - leaks: MSVC's ASan does *not* check for leaks, try to run the MSVC CRT
     debug heap (`_CrtDumpMemoryLeaks`) and decide if it's worth it.
-- [ ] **Entry point:** chose normal `main()` vs SDL main callbacks, and
+- [ ] **Entry point:** chose normal `main()` or SDL main callbacks, and
       wrote down why (see Decisions).
-- [ ] **Time box:** ~1 weekend. When it runs out, ship what works.
+- [ ] **Shipping** (the zip is what a player receives: release build only):
+  - [ ] **S1:** one command builds `00_window-v0.1.zip` from the
+        `windows-release` preset (`--target ship_00_window`). *Why: if shipping is a chore, you won't
+        do it. Set it up once, reuse it for all ten games.*
+  - [ ] **S2:** unzipped into a fresh folder outside the repo, it runs on
+        double-click. *Why: proves it doesn't depend on the build folder,
+        working directory or terminal.*
+  - [ ] **S3:** you know which DLLs the exe needs, checked with
+        `dumpbin /dependents`. *Why: SDL is linked in statically, but the
+        MSVC runtime (`VCRUNTIME140.dll`) probably isn't. That's what
+        "dependencies" means in practice.*
+  - [ ] **S4:** the zip has no debug or ASan builds, no `.pdb`, nothing
+        the player doesn't need. *Why: ASan builds need extra DLLs and are
+        slow; shipping one by mistake is a classic.*
+  - [ ] **S5:** pushing a tag (`00_window-v0.1`) makes GitHub build the zip and
+        attach it to a release; every push checks that the project builds.
+        *Why: shipping and "does it build on a clean machine" become
+        automatic. Tooling: generated with AI, explained, not hand-written.*
+  - Stretch: run it in **Windows Sandbox** (clean Windows, built into
+    Win 11 Pro). If the MSVC runtime is missing there, choose: static
+    runtime (`/MT`) or ship the redistributable.
+- [ ] **Time box:** ~1 weekend. When it runs out, ship what works. Use
+  AI to help 'ship' the game to get into the habit of it.
 
 ## Questions to answer
 
@@ -54,21 +62,15 @@ you *measured* or *saw*, not something you read.
    or minimize it?
 7. Debug vs release build: is there a visible difference in frame time yet?
    Why or why not?
+8. Which DLLs does your exe need at runtime, and which would a clean
+   Windows install be missing? How did you find out? Then download your
+   shipped game from its release page and play it.
 
 ## Reading
 
 - [ ] Game Programming Patterns: [Game Loop](https://gameprogrammingpatterns.com/game-loop.html)
 - [ ] [SDL3 README: main functions](https://wiki.libsdl.org/SDL3/README-main-functions)
 - [ ] [SDL3 examples](https://examples.libsdl.org/SDL3/): renderer/clear, renderer/rectangles
-
-## Decisions
-
-<!-- One line each: what you chose, and why. E.g. entry point style, how
-     you report frame time, which keys move the rect. -->
-
-## Log
-
-<!-- Dated notes while building: what broke, what surprised you. -->
 
 ## Retro
 

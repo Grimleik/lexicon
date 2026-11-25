@@ -16,6 +16,10 @@ The question, or for an exercise the task.
 The short answer, or for an exercise what a correct result looks like
 (e.g. the expected output or one command that does it).
 
+## Read more
+
+<!-- optional: 1-2 links to the exact section that explains it -->
+
 ## Log
 
 <!-- one line per review, added by /quiz: - YYYY-MM-DD sure right -->

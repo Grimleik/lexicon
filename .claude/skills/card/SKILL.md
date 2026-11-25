@@ -32,5 +32,7 @@ their own (unless it contains an error).
 
 Once the user agrees, write the card to `notes/ledger/<slug>.md` using
 `notes/ledger/_template.md`: `box: 1`, `created` and `last_reviewed` today,
-tags as the user gave them, or suggest 1-2. The slug is a few words that
+tags as the user gave them, or suggest 1-2. Add a `## Read more` section
+with 1-2 links to the exact section of a primary source that explains it
+(a book chapter, the official docs), so a failed quiz has somewhere to go. The slug is a few words that
 name the idea (`fixed-timestep-accumulator.md`). Confirm with the file path.

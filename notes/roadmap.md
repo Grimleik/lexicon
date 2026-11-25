@@ -21,13 +21,18 @@ names or art.
    if you can't, ask.
 3. **Read just in time:** only the "Read" column for this game, nothing
    ahead.
-4. Build it. Time limit: small games ~1 weekend, slices ~3-4 weekends.
-   When time runs out, ship what works.
-5. **Retro** (5 min): what was new, what was hard, what should move to
+4. **Build it on its own branch** (`git switch -c 00_window`), pushing as
+   you go so CI checks every push. Time limit: small games ~1 weekend,
+   slices ~3-4 weekends. When time runs out, ship what works.
+5. **Ship:** open a pull request into `master`, wait for CI to go green,
+   run `/review` on the diff, merge. Then tag the merge commit
+   (`git tag -a 00_window-v0.1 -m "..."`) and push the tag to get the
+   release zip. Keep the branch if you want to prototype further.
+6. **Retro** (5 min): what was new, what was hard, what should move to
    `core/`? Answer the questions from step 2, backed by something you
    measured or saw. Then the **copilot setup**: what helped, what
    annoyed, anything to pull in from `notes/copilot_backlog.md`?
-6. Optional **own-it side quest**: replace or build one system yourself.
+7. Optional **own-it side quest**: replace or build one system yourself.
 
 ## The ladder
 

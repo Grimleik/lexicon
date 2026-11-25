@@ -27,7 +27,8 @@ Read it first.
    the wording. For exercises, check the result yourself (run the command,
    read the code).
 4. Say right or wrong and why, in a few lines. Then show the card's answer.
-   The user may overrule your verdict.
+   The user may overrule your verdict. If wrong and the card has a
+   `## Read more` section, point to it.
 5. **Sure but wrong** is the most important case: it points to a
    misconception. Spend a little time on it, and ask whether the card itself
    is unclear and should be rewritten.

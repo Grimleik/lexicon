@@ -40,7 +40,25 @@ use shows it's missing.
 - **itch.io:** a restricted page (secret link) for games worth showing;
   upload from the release job with itch's `butler` CLI.
 - **ASan in CI:** add `windows-asan` to the build matrix if minutes allow.
-- **Linux in CI:** needs SDL's dev packages installed on the runner first.
+- **Linux + aarch64 in CI** (needed by game 2): a Linux job, then an
+  aarch64 one (cross toolchain, or an ARM runner if the repo's plan allows
+  it) so every push proves the Pi build still compiles. Needs SDL's dev
+  packages on the runner first. Until then, build natively on the Pi.
+- **Pi release zip:** `ship_` targets for `linux-release` on aarch64,
+  attached to the same GitHub release as the Windows zip.
+- **Project blog** (from the end of 00_window): GitHub Pages site in
+  `docs/` with one post per project (screenshots/GIFs, code links at the
+  release tag, download links). `tools/pages_check.sh` checks/enables it;
+  `docs/index.md` is a placeholder. Code links and downloads need the repo
+  public.
+
+## Engine helpers
+
+- **Shader hot-reload helper** (game 4): watch shader files, rebuild the
+  program on change, keep the old one if compilation fails.
+- **Headless EGL platform stub** (project A): a second `platform/`
+  implementation that creates a GLES context without a window
+  (EGL + GBM/surfaceless on the Pi).
 
 ## Session habits
 

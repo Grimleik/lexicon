@@ -23,7 +23,7 @@ on:
   push:
     branches: ['**']
     tags: ['*-v*']            # release tags: <target>-v<version>
-    paths-ignore: ['notes/**', '**.md']
+    paths-ignore: ['notes/**', 'docs/**', '**.md']   # docs/ = blog site
   workflow_dispatch:          # adds a "Run workflow" button in the Actions tab
 
 # A newer push to the same branch cancels a run that's still going.
@@ -94,7 +94,7 @@ jobs:
           zip="build/windows-release/ship/${GITHUB_REF_NAME}.zip"
           if [ ! -f "$zip" ]; then
             echo "Expected $zip, found:"; ls build/windows-release/ship
-            echo "The tag and the version in lexicon_ship() must match."
+            echo "The tag and the version in luma_ship() must match."
             exit 1
           fi
 

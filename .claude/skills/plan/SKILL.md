@@ -15,8 +15,12 @@ deciding is theirs.
 
 ## Gather
 
-- The game's row in `notes/roadmap.md`: gameplay outcomes, systems outcome,
-  side quest, and its "Read" sources. Also the per-game routine (time box).
+- The game's row in `notes/roadmap.md`: renderer, gameplay outcomes,
+  systems/graphics outcomes, Pi column, side quest, time box, and its
+  "Read" sources. Also the per-project routine and its additions (from
+  game 2: runs on the Pi + one measured number on the Pi).
+- If the row is marked *milestones*, draft only the **next** milestone's
+  DoD (weekend-sized), plus a one-line goal for each later one.
 - The game's devlog in `notes/` if it exists. Keep what the user already
   wrote; build on it, don't replace it.
 - Earlier devlogs' retros, if any: things that were hard or left undone
@@ -35,8 +39,7 @@ deciding is theirs.
 - turns vague wishes into checks. "Ship it" becomes where it goes, what is
   in it, and how you check that it runs outside the dev setup.
 
-**Scope.** Fit the roadmap's time box (small game ~1 weekend, slice ~3-4
-weekends). Anything that doesn't fit goes to a **Stretch** list, not the DoD.
+**Scope.** Fit the time box in the game's row (a milestone: ~1 weekend). Anything that doesn't fit goes to a **Stretch** list, not the DoD.
 Fewer, sharper items beat a long list.
 
 **Questions (3-7).** Drawn from the outcomes. Answerable in the retro with

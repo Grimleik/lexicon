@@ -1,4 +1,4 @@
-# Lexicon: learning project
+# Luma: learning project
 
 My main goal is to grow as a programmer and problem solver. I want to
 understand everything that ends up in this repo, whether I wrote it or it
@@ -91,9 +91,18 @@ then build the real thing in my game, copilot rules apply again.
 - **Platform: SDL3.** After the Pong refactor, game code never includes
   SDL directly. Only `platform/` talks to SDL, so each SDL system can later
   be replaced by my own.
+- **Graphics:** OpenGL code stays within **OpenGL ES 3.0 / GLSL ES 3.00**
+  (`#version 300 es`), so it runs unchanged on desktop and the Raspberry
+  Pi 4. Desktop drivers (NVIDIA especially) accept more than the spec
+  allows, so shaders count as working only once they run on the Pi.
+  Reviews flag desktop-only GL. A renderer interface is extracted only once
+  two backends exist, and stays thin.
+- **Performance:** measure first, then discuss. When speed comes up,
+  suggest a measurement before an explanation or a fix.
 - **Shared code:** `core/` grows by extraction only. Code moves there the
   third time a game needs it, never designed up front.
-- **Progression:** see `notes/roadmap.md`. One devlog per game in `notes/`.
+- **Progression:** see `notes/roadmap.md` (graphics-focused ladder, with a
+  decision point after project A). One devlog per project in `notes/`.
   Ideas for this copilot setup that are deliberately postponed:
   `notes/copilot_backlog.md`.
 

@@ -22,7 +22,7 @@ to the Reading section.
 - [ ] **Shipping** (the zip is what a player receives: release build only):
   - [ ] **S1:** one command builds `00_window-v0.1.zip` from the
         `windows-release` preset (`--target ship_00_window`). *Why: if shipping is a chore, you won't
-        do it. Set it up once, reuse it for all ten games.*
+        do it. Set it up once, reuse it for every project.*
   - [ ] **S2:** unzipped into a fresh folder outside the repo, it runs on
         double-click. *Why: proves it doesn't depend on the build folder,
         working directory or terminal.*

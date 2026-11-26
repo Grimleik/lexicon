@@ -25,7 +25,7 @@
         { "name": "windows-release", "inherits": "windows-base", "displayName": "Windows Release",
           "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" } },
         { "name": "windows-asan",    "inherits": "windows-base", "displayName": "Windows Debug + AddressSanitizer",
-          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "LEXICON_ASAN": "ON" } },
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "LUMA_ASAN": "ON" } },
 
         {
             "name": "linux-base",
@@ -39,6 +39,6 @@
         { "name": "linux-release", "inherits": "linux-base", "displayName": "Linux Release",
           "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" } },
         { "name": "linux-asan",    "inherits": "linux-base", "displayName": "Linux Debug + AddressSanitizer",
-          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "LEXICON_ASAN": "ON" } }
+          "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "LUMA_ASAN": "ON" } }
     ]
 }

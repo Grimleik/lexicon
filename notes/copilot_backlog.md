@@ -48,7 +48,8 @@ use shows it's missing.
   attached to the same GitHub release as the Windows zip.
 - **Project blog** (from the end of 00_window): GitHub Pages site in
   `docs/` with one post per project (screenshots/GIFs, code links at the
-  release tag, download links). `tools/pages_check.sh` checks/enables it;
+  release tag, download links). Enable once: Settings → Pages → branch
+  `master`, folder `/docs`;
   `docs/index.md` is a placeholder. Code links and downloads need the repo
   public.
 

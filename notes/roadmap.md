@@ -39,7 +39,7 @@ names or art. Portfolio write-ups describe them in my own words
    go so CI checks every push. When the time box runs out, ship what works.
    - Projects marked *milestones* are split into weekend-sized pieces, each
      with its own DoD, branch and PR.
-5. **Ship:** PR into `master`, green CI, `/review`, merge, tag the merge
+5. **Ship** (exact steps: `notes/shipping.md`): PR into `master`, green CI, `/review`, merge, tag the merge
    commit (`git tag -a 02_breakout-v0.1 -m "..."`), push the tag.
    Milestones bump the version and name the milestone in the tag message
    (`06_diablo-v0.2`, message "m2: shadows"), so the release job still

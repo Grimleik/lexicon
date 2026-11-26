@@ -76,3 +76,7 @@ you *measured* or *saw*, not something you read.
 
 <!-- 5 min at the end: what was new, what was hard, what should move to
      core/ (nothing yet, it's game 0), answers to the questions above. -->
+
+- [ ] Also review the process itself (first time through
+      `notes/shipping.md`): the new roadmap, the PR → tag → release flow,
+      and the blog post. What was a chore, what to change?
